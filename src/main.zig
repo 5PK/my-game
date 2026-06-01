@@ -4,19 +4,43 @@ const rl = @import("raylib");
 
 const my_game = @import("my_game");
 
-pub fn main() !void {
+const World = @import("world.zig").World;
+const Player = @import("player.zig").Player;
+const renderer = @import("renderer.zig");
 
-    rl.initWindow(1280, 720, "zig zag!");
+pub fn main() !void {
+    rl.initWindow(
+        1024,
+        768,
+        "Isometric Game",
+    );
+
     defer rl.closeWindow();
 
-    while(!rl.windowShouldClose()){
+    rl.setTargetFPS(60);
+
+    renderer.loadTextures();
+    defer renderer.unloadTextures();
+
+    var world = World.init();
+
+    var player = Player{
+        .x = 4.0,
+        .y = 4.0,
+    };
+
+    while (!rl.windowShouldClose()) {
+
+        player.update();
+
         rl.beginDrawing();
         defer rl.endDrawing();
 
-        rl.clearBackground(rl.Color.sky_blue);
-    }
+        rl.clearBackground(rl.Color.black);
 
-}
+        renderer.drawWorld(&world);
+        renderer.drawPlayer(&player);
+    }}
 
 test "simple test" {
     const gpa = std.testing.allocator;
