@@ -4,7 +4,8 @@ const rl = @import("raylib");
 
 const my_game = @import("my_game");
 
-const World = @import("world.zig").World;
+const world_mod = @import("world.zig");
+const World = world_mod.World;
 const Player = @import("player.zig").Player;
 const renderer = @import("renderer.zig");
 
@@ -32,13 +33,14 @@ pub fn main() !void {
     while (!rl.windowShouldClose()) {
 
         player.update();
+        player.clampToMap(world_mod.WIDTH, world_mod.HEIGHT);
 
         rl.beginDrawing();
         defer rl.endDrawing();
 
         rl.clearBackground(rl.Color.black);
 
-        renderer.drawWorld(&world);
+        renderer.drawWorld(&world, &player);
         renderer.drawPlayer(&player);
     }}
 
